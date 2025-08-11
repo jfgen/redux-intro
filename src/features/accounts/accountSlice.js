@@ -38,8 +38,17 @@ const accountReducer = (state = initialStateAccount, action) => {
   }
 };
 
-export const deposit = (amount) => {
-  return { type: "account/deposit", payload: amount };
+export const deposit = (amount, currency) => {
+  if (currency === "USD") return { type: "account/deposit", payload: amount };
+
+  fetch(`https://api.frankfurter.dev/v1/latest?base=${currency}&symbols="USD"`)
+    .then((resp) => resp.json())
+    .then((data) => {
+      const convertedAmount = (amount * data.rates[to]).toFixed(2);
+      alert(`${amount} ${currency} = ${convertedAmount} USD`);
+    });
+  }
+  // return (dispatch, getState) => {};
 };
 export const withdraw = (amount) => {
   return { type: "account/withdraw", payload: amount };
